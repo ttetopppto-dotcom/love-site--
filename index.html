@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For You ❤️</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;600&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Cairo',sans-serif;}
+body{background:#000;color:#fff;text-align:center;overflow-x:hidden}
+
+/* ===== Background ===== */
+.bg{
+position:fixed;inset:0;
+background:radial-gradient(circle at top,#ff4d6d22,#000),
+radial-gradient(circle at bottom,#ff006622,#000);
+z-index:-2;
+}
+
+/* ===== Floating ===== */
+.heart,.star{
+position:fixed;
+bottom:-20px;
+pointer-events:none;
+animation:floatUp linear forwards;
+opacity:0;
+}
+.heart{color:#ff4d6d;}
+.star{color:#fff;}
+
+@keyframes floatUp{
+0%{transform:translateY(0);opacity:0;}
+20%{opacity:1;}
+100%{transform:translateY(-120vh);opacity:0;}
+}
+
+/* ===== Password ===== */
+#passwordScreen{
+position:fixed;inset:0;
+background:#000;
+display:flex;align-items:center;justify-content:center;
+z-index:1000;
+}
+
+.pass-box{
+background:#111;padding:25px;border-radius:20px;
+}
+
+input{
+padding:12px;border:none;border-radius:10px;margin-top:10px;text-align:center;
+}
+
+button{
+background:#ff4d6d;color:#fff;border:none;
+padding:10px 20px;border-radius:10px;margin-top:10px;
+cursor:pointer;
+}
+
+/* ===== Main ===== */
+#main{display:none;padding:20px;animation:fade 1.5s}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+
+/* ===== Typewriter ===== */
+.typewriter{
+margin-top:20px;
+min-height:120px;
+line-height:2;
+}
+
+/* ===== Gallery ===== */
+.gallery{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:15px;margin-top:20px;
+}
+
+.card{
+background:#111;border-radius:15px;overflow:hidden;
+transition:.4s;
+}
+.card:hover{transform:scale(1.05)}
+.card img{width:100%;height:250px;object-fit:cover}
+.caption{padding:10px;font-size:14px}
+
+/* ===== Flip ===== */
+.flip-container{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:20px}
+.flip-card{width:150px;height:150px;perspective:1000px}
+.flip-inner{width:100%;height:100%;transition:.6s;transform-style:preserve-3d}
+.flip-card:hover .flip-inner{transform:rotateY(180deg)}
+.flip-front,.flip-back{
+position:absolute;width:100%;height:100%;
+display:flex;align-items:center;justify-content:center;
+border-radius:10px;backface-visibility:hidden
+}
+.flip-front{background:#222}
+.flip-back{background:#ff4d6d;transform:rotateY(180deg)}
+
+/* ===== Counter ===== */
+.counter{
+margin-top:30px;
+font-size:18px;
+}
+
+/* ===== Boxes ===== */
+.box{
+background:#111;
+padding:15px;
+border-radius:15px;
+margin-top:20px;
+}
+
+/* ===== Popup ===== */
+.popup{
+display:none;
+position:fixed;inset:0;
+background:rgba(0,0,0,.7);
+align-items:center;justify-content:center;
+}
+.popup-content{
+background:#111;padding:20px;border-radius:15px;
+}
+
+/* ===== Question ===== */
+.result{margin-top:10px;padding:10px;border-radius:10px}
+
+</style>
+</head>
+
+<body>
+
+<div class="bg"></div>
+
+<!-- Password -->
+<div id="passwordScreen">
+<div class="pass-box">
+<h2>🔐 Password</h2>
+<input type="password" id="pass">
+<br>
+<button onclick="enter()">دخول ❤️</button>
+</div>
+</div>
+
+<!-- Main -->
+<div id="main">
+
+<audio id="music" loop>
+<source src="music.mp3">
+</audio>
+
+<!-- Typewriter -->
+<div class="typewriter" id="type"></div>
+
+<!-- Images -->
+<div class="gallery">
+<div class="card">
+<img src="img1.jpg">
+<div class="caption">إيه الجمال ده 😂❤️</div>
+</div>
+
+<div class="card">
+<img src="img2.jpg">
+<div class="caption">القمر بيغير منك 😂🌙</div>
+</div>
+</div>
+
+<!-- Flip -->
+<div class="flip-container">
+<div class="flip-card">
+<div class="flip-inner">
+<div class="flip-front">اضغط ❤️</div>
+<div class="flip-back">بحبك</div>
+</div>
+</div>
+
+<div class="flip-card">
+<div class="flip-inner">
+<div class="flip-front">اضغط ❤️</div>
+<div class="flip-back">أكتر</div>
+</div>
+</div>
+</div>
+
+<!-- Counter -->
+<div class="counter" id="counter"></div>
+
+<!-- Memory -->
+<div class="box">
+<button onclick="openMem()">💖 الذكريات</button>
+</div>
+
+<div class="popup" id="mem">
+<div class="popup-content">
+<p>19/3/2025 ❤️ بداية كل حاجة</p>
+<button onclick="closeMem()">إغلاق</button>
+</div>
+</div>
+
+<!-- Question -->
+<div class="box">
+<p>Do you love me?</p>
+<button onclick="ans('yes')">Yes</button>
+<button onclick="ans('no')">No</button>
+<div id="res"></div>
+</div>
+
+</div>
+
+<script>
+
+/* Enter */
+function enter(){
+if(pass.value==="love"){
+passwordScreen.style.display="none";
+main.style.display="block";
+
+let m=music;
+m.play();
+m.volume=0;
+
+let fade=setInterval(()=>{
+if(m.volume<1){m.volume+=0.05}else clearInterval(fade)
+},300);
+
+typeWriter();
+}
+}
+
+/* Typewriter */
+function typeWriter(){
+let text=`بحبك ❤️
+إنتي أحلى حاجة في حياتي ❤️
+مش قادر أعيش من غيرك ❤️
+كل يوم بحبك أكتر ❤️`;
+
+let i=0;
+let el=document.getElementById("type");
+
+function run(){
+if(i<text.length){
+el.innerHTML+=text[i++];
+setTimeout(run,40);
+}
+}
+run();
+}
+
+/* Counter */
+let start=new Date("2025-03-19T18:30:00");
+
+setInterval(()=>{
+let d=new Date()-start;
+
+let days=Math.floor(d/(1000*60*60*24));
+let hours=Math.floor((d/(1000*60*60))%24);
+let mins=Math.floor((d/(1000*60))%60);
+
+counter.innerHTML=`${days} يوم ${hours} ساعة ${mins} دقيقة ❤️`;
+},1000);
+
+/* Hearts + Stars */
+setInterval(()=>{
+let el=document.createElement("div");
+
+if(Math.random()>0.5){
+el.innerHTML="❤️";
+el.className="heart";
+}else{
+el.innerHTML="★";
+el.className="star";
+}
+
+el.style.left=Math.random()*100+"vw";
+el.style.fontSize=(10+Math.random()*15)+"px";
+el.style.animationDuration=(8+Math.random()*10)+"s";
+
+document.body.appendChild(el);
+
+setTimeout(()=>el.remove(),15000);
+
+},700);
+
+/* Memory */
+function openMem(){mem.style.display="flex"}
+function closeMem(){mem.style.display="none"}
+
+/* Answer */
+function ans(a){
+if(a==="yes"){
+res.innerHTML="بحبك يا هبلة 🤭❤️";
+res.className="result";
+}else{
+res.innerHTML="اخص عليك 😡";
+res.className="result";
+}
+}
+
+</script>
+
+</body>
+  </html>
